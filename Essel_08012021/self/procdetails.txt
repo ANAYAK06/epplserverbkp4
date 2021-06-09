@@ -1,0 +1,22 @@
+Overhead:-
+proc:-spGetCCAccurateDetails
+spInsertUpdateCCAccurate
+spInsertDepValue
+spGetAllDepriciationConfigGrid
+spGetCCdepreciationValue
+spGetwefdatedepreciation
+
+
+
+spGetAllConfigCodes
+spCheckConfigStatus
+
+spGetCCAccurateDetails
+spGetCCOverheadpercent
+spInsertDepValue
+spInsertOverheadValue
+
+
+spgetmenu
+masteroperation table
+menugrouping table

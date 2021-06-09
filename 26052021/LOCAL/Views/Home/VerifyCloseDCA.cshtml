@@ -1,0 +1,201 @@
+﻿@model List<EsselTestLocalApplication.Models.DCAdetails>
+@{
+    ViewBag.Title = "VerifyCloseDCA";
+    Layout = "~/Views/Shared/EsselMaster.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="table-responsive">
+                    <table id="tblDCACloseList" style="width:100%" class="hover stripe nowrap example dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th class="hidden"></th>
+                                <th>DCA Code</th>
+                                <th>DCA Name</th>
+                                <th>DCA Type</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="hidden">
+                                        @Html.DisplayFor(modelItem => item.BasicDCAInfo.DCAID)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BasicDCAInfo.DCACode)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BasicDCAInfo.DCAName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.BasicDCAInfo.DCATypeName)
+                                    </td>
+                                    <td>
+                                        <button onClick="ViewDCACloseDetails(@item.BasicDCAInfo.DCAID, @item.BasicDCAInfo.DCATypeID, '@item.BasicDCAInfo.DCACode', '@item.BasicDCAInfo.DCAName',' @item.BasicDCAInfo.DCATypeName')">View</button>
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="closeDCAConfirmationForVerifyAppr" role="dialog" data-backdrop="static" data-keyboard="false">
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dcaCloseGrid = null;
+        InitializeDCACloseGrid();
+        //close DCA
+        $("#closeDCAConfirmationForVerifyAppr").on("hidden.bs.modal", function () {
+            location.reload();
+        });
+    });
+
+    function InitializeDCACloseGrid() {
+        var dcaCloseGrid = $('#tblDCACloseList').DataTable({
+            destroy: true,
+            paging: true,
+            lengthChange: false,
+            searching: false,
+            order: [[0, "asc"]],
+            language: {
+                "emptyTable": "No Account Heads Found"
+            },
+            "createdRow": function (row, data, index) {
+
+               
+            },
+            pageLength: 10
+        });
+    }
+    function ViewDCACloseDetails(Dcaid, Dcatypid, Dcacode, Dcaname, Dcatypename) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/ViewCloseDCA",
+            data: '{DcaId:"' + Dcaid + '",DCAType:"' + Dcatypename + '",DCACode:"' + Dcacode + '",DCAName:"' + Dcaname + '"}',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'html',
+            success: function (data) {
+
+                $('#closeDCAConfirmationForVerifyAppr').html(data);
+                $('#closeDCAConfirmationForVerifyAppr').modal();
+                $("#divClsoeDcaInfoMsg").text("");
+                $("#divClsoeDcaInfoMsg").addClass("hidden");
+            }
+        });
+
+    }
+    function NotifyDcaPendings(Dcaid, Dcacode, Accessname) {
+        //////////debugger;
+        var errorMsg = "";
+        isValid = true;
+        var Remarks = $("#txtDcaCloseNote").val();
+        var closingdate = $("#txtDcaClosingAson").val();
+        if (Accessname === 'FirstAndLastLevel' || Accessname === 'ApproveLevel' || Accessname === 'Creation') {
+
+            if (closingdate === "" || closingdate === null) {
+                errorMsg += "<p style='margin-top:-5px!important;'>Select Closing As On Date</p>";
+                isValid = false;
+            }
+        }
+        if (Accessname === 'VerificationLevel' || Accessname === 'ApproveLevel') {
+            var ddlaction = $("#ddlCloseDcaStatus option:selected").index();
+            if (ddlaction === 0) {
+                errorMsg += "<p style='margin-top:-5px!important;'>Select Status</p>";
+                isValid = false;
+            }
+
+        }
+        if (Remarks === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Remarks</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divClsoeDcaInfoMsg").text("");
+            $("#divClsoeDcaInfoMsg").append(finalerror + errorMsg + "</div>");
+            $("#divClsoeDcaInfoMsg").addClass("alert-danger");
+            $("#divClsoeDcaInfoMsg").removeClass("hidden alert-success");
+            return false;
+        }
+        else {
+            $("#divClsoeDcaInfoMsg").text("");
+            var sendNotificationDetails = {};
+            $("#divClsoeDcaInfoMsg").addClass("hidden");
+            if (Accessname === 'FirstAndLastLevel' || Accessname === 'VerificationLevel' || Accessname === 'ApproveLevel') {
+                sendNotificationDetails = {
+                    Action: Accessname,
+                    DCACode: Dcacode,
+                    Remarks: $("#txtDcaCloseNote").val(),
+                    CloseDate: $("#txtDcaClosingAson").val(),
+                    Status: $("#ddlCloseDcaStatus option:selected").val()
+                };
+            }
+            else {
+                sendNotificationDetails = {
+                    Action: Accessname,
+                    DCACode: Dcacode,
+                    Remarks: $("#txtDcaCloseNote").val(),
+                    CloseDate: $("#txtDcaClosingAson").val(),
+                    Status: ''
+                };
+
+            }
+            $("#btnNotify").prop('disabled', true);
+            addFailMsg = "Error Occurred While Sending Notification.";
+            addSuccessMsg = "Notification Sent Successfully.";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/Home/CloseDcaNotifications',
+                data: { saveNotification: sendNotificationDetails },
+                success: function (Data) {
+                    if (Data.saveStatus === 'Notified') {
+
+                        if (Accessname === 'Creation' || Accessname === 'FirstAndLastLevel') {
+                            $("#divClsoeDcaInfoMsg").text(addSuccessMsg);
+                        }
+                        else if (Accessname === 'VerificationLevel') {
+                            $("#divClsoeDcaInfoMsg").text('Closing Account Head Verified Successfully');
+                        }
+                        else {
+                            var type = $("#ddlCloseDcaStatus option:selected").val();
+                            if (type === 'Reject')
+                                $("#divClsoeDcaInfoMsg").text('Closing Account Head  Rejected Successfully');
+                            else
+                                $("#divClsoeDcaInfoMsg").text('Closing Account Head  Approved Successfully');
+                        }
+                        $("#divClsoeDcaInfoMsg").removeClass("hidden alert-danger");
+                        $("#divClsoeDcaInfoMsg").addClass("alert-success");
+                    }
+                    else {
+                        $("#btnNotify").prop('disabled', false);
+                        $("#divClsoeDcaInfoMsg").append("<div>" + addFailMsg + "</div>");
+                        $("#divClsoeDcaInfoMsg").addClass("alert-danger");
+                        $("#divClsoeDcaInfoMsg").removeClass("hidden alert-success");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#btnNotify").prop('disabled', false);
+                    $("#divClsoeDcaInfoMsg").append("<div>" + addFailMsg + "</div>");
+                    $("#divClsoeDcaInfoMsg").addClass("alert-danger");
+                    $("#divClsoeDcaInfoMsg").removeClass("hidden alert-success");
+                }
+            });
+        }
+
+
+    }
+</script>
+
+
+

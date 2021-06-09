@@ -1,0 +1,112 @@
+﻿@model EsselTestLocalApplication.Models.HR.PaySlipGeneration
+@{
+    ViewBag.Title = "PaySlipGeneration";
+    Layout = "~/Views/Shared/EsselMaster.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">PaySlip Generation</h5>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    @Html.LabelFor(model => model.EffectiveMonth)
+                                    @Html.DropDownListFor(model => model.EffectiveMonth, new SelectList(Model.monthlst, "name", "name"), " - Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlPSMonth" })
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.LabelFor(model => model.Year)
+                                    @Html.DropDownListFor(model => model.Year, new SelectList(Model.yearlst, "Year", "YearValue"), " - Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlPSyear" })
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="View" class="btn btn1 btn-success" id="btnViewPSRpt" onclick="ShowPSReport()" />
+                                        <input type="submit" value="Reset" class="btn btn1 btn-success" id="btnResetPSRpt" onclick="ResetPSReport()" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2  text-center">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="divPSRptGrid">
+                            <div id="divPSRptDetails">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="text-center">
+                                <br />
+                                <div id="divPSReportInfoMsg" class="alert alert-danger hidden">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function ShowPSReport() {
+        isValid = true;
+        var errorMsg = "";
+        var Monthindex = $("#ddlPSMonth option:selected").index();
+        var Yearindex = $("#ddlPSyear option:selected").index();
+        if (Monthindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Month</p>";
+            isValid = false;
+        }
+        if (Yearindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select  Year</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror2 = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divPSReportInfoMsg").text("");
+            $("#divPSReportInfoMsg").append(finalerror2 + errorMsg + "</div>");
+            $("#divPSReportInfoMsg").addClass("alert-danger");
+            $("#divPSReportInfoMsg").removeClass("hidden alert-success");
+        }
+        else {
+            $("#divPSReportInfoMsg").text("");
+            $("#divPSReportInfoMsg").addClass("hidden");
+            var Month = $("#ddlPSMonth option:selected").val();
+            var Year = $("#ddlPSyear option:selected").val();
+            var Createdby = '@Session["Createdby"]';
+            $.ajax({
+                type: 'GET',
+                dataType: 'html',
+                url: '/HR/ViewPSReportGrid',
+                data: { Month: Month, Year: Year, EmpUID: Createdby },
+                success: function (Data) {
+                    var count1 = Object.keys(Data).length;
+                    var msg = "";
+                    if (count1 > 0) {
+                        $("#divPSRptDetails").html(Data);
+                        $("#divPSRptDetails").removeClass('hidden');
+                    }
+                    else {
+                        $("#divPSRptDetails").html('No Data Found');
+                        $("#divPSRptDetails").removeClass('hidden');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("error");
+                }
+            });
+
+        }
+
+    }
+    function ResetPSReport() {
+        location.reload();
+    }
+</script>

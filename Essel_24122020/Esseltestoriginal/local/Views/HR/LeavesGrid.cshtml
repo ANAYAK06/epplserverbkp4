@@ -1,0 +1,112 @@
+﻿@model List<EsselTestLocalApplication.Models.HR.ELorPaidLeaveRule>
+@if (Model.Count > 0)
+{
+    <div class="table-responsive">
+        <table id="tblELORPaidLeavesGrid" style="width:100%" class="hover stripe nowrap example dataTable no-footer">
+            <thead>
+                <tr>
+                    <th>Leave Type</th>
+                    <th>Carry Farword To Next Year</th>                    
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LeaveType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CarryforwardToNextYear)
+                        </td>
+                       
+                        <td>
+                            @*<input type="button" class="editleave btn btn-md btn-danger" value="Edit">*@
+                            <input type="button" class="deleteleave btn btn-md btn-danger" value="Delete">
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr></tr>
+            </tfoot>
+        </table>
+    </div>
+    <script>
+    $(document).ready(function () {
+        var leavesGrid = null;
+        InitializeLeavesGrid();
+        $("#tblELORPaidLeavesGrid").on("click", ".deleteleave", function (event) {
+            //alert('deleted');
+            var row = $(this).closest("tr");
+            var LeaveType = $.trim(row.find("td").eq(0).html());
+            //$(this).closest("tr").remove();
+
+            addFailMsg = "Error Occurred While Deleting.";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/HR/DeleteELorPaidLeavess',
+                data: { leavetype: LeaveType },
+                success: function (Data) {
+                    //alert("Hi");
+                    if (Data.saveStatus === "Deleted") {
+                        row.remove();
+                        BindLeaveTypes();
+                        $('#chkLeaveCaryFwd').prop('checked', false);
+                        //var shcount = $("#tblSalaryHeadGrid tbody tr").length;
+                        //if (shcount > 0) {
+                        //    $("#divGridSalaryHead").removeClass('hidden');
+                        //}
+                        //else { $("#divGridSalaryHead").addClass('hidden'); }
+                    }
+                    else {
+                        $("#divLeavesInfoMsg").text(addFailMsg);
+                        $("#divLeavesInfoMsg").addClass("alert-danger");
+                        $("#divLeavesInfoMsg").removeClass("hidden alert-success");
+                    }
+                    var shcount = $("#tblELORPaidLeavesGrid tbody tr").length;
+                    if (shcount > 0) {
+                        $("#divgridleaves").removeClass('hidden');
+                    }
+                    else { $("#divgridleaves").addClass('hidden'); }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#divLeavesInfoMsg").text(addFailMsg);
+                    $("#divLeavesInfoMsg").addClass("alert-danger");
+                    $("#divLeavesInfoMsg").removeClass("hidden alert-success");
+                }
+            });
+        });
+
+    });
+        function InitializeLeavesGrid() {
+            leavesGrid = $('#tblELORPaidLeavesGrid').DataTable({
+            info: false,
+            destroy: false,
+            paging: false,
+            lengthChange: false,
+            searching: false,
+            ordering: false,
+            pagingType: false,
+            language: {
+                "emptyTable": "No Leaves Found"
+            },
+                "createdRow": function (row, data, index) {
+
+                    //var oldcarryfwd = $.trim($('td:eq(1)', row).html());
+                    ////alert(oldstatus);
+                    //debugger;
+                    //if (oldcarryfwd === false) {
+                    //    $('td:eq(1)', row).html("No");
+
+                    //}
+                    //else { $('td:eq(1)', row).html("Yes"); }
+
+            },
+            pageLength: 10
+        });
+    }
+    </script>
+}

@@ -1,0 +1,1410 @@
+﻿
+@model EsselTestLocalApplication.Models.HR.EmployeeRegistration
+<style>
+    .disabledTab {
+        pointer-events: none;
+    }
+
+    .form-group .ui-datepicker-trigger {
+        position: absolute;
+        top: 1px !important;
+        right: 20px;
+    }
+
+    table > tbody > tr > td {
+        padding: 0px !important;
+        /*line-height: 1.42857143;*/
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
+    .strike1 > span {
+        position: relative;
+        text-align: center;
+        /* margin-right: 80%; */
+        display: block;
+        font-size: 15px;
+        border-radius: 10px;
+        /* width: 80px; */
+        width: 22% !important;
+        /* height: 80px; */
+        right: -93px;
+        padding: 5px;
+        /* margin: 30px; */
+        font-weight: bold;
+        background: #fff;
+        border: 2px solid #666;
+    }
+
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+</style>
+<div class="row" id="divMainData">
+    @*<div class="col-md-12">
+            <div class="col-md-1"></div>
+            <div class="col-md-2">@Html.LabelFor(model => model.Department)</div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.Department, new SelectList(Model.EmpDeptList, "DepartmentId", "DepartmentName"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle" })
+                </div>
+            </div>
+            <div class="col-md-5"></div>
+
+        </div>*@
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">@Html.LabelFor(model => model.JoiningCategory)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.JoiningCategory, new SelectList(Model.EmpJoiningCategoryList, "EJoiningCategory", "EJoiningCategory"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpjoinCategory" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">@Html.LabelFor(model => model.JoiningType)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.JoiningType, new SelectList(Model.EmpJoiningTypeList, "EJoiningType", "EJoiningType"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpjoinType", onchange = "NewEmpJoiningTypeChange()" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">@Html.LabelFor(model => model.Category)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.Category, new SelectList(Model.EmpCategoryList, "ECategory", "ECategory"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpCategory" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">@Html.LabelFor(model => model.Appointmenttype)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.Appointmenttype, new SelectList(Model.EmpAppointmenttypeList, "EAppointmenttype", "EAppointmenttype"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpAppointType" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row" id="divNewOldUser">
+        <div class="col-md-2"></div>
+        <div class="col-md-2">@Html.LabelFor(model => model.OldEmpUsername)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.OldEmpUsername, new SelectList(Model.EmpDataList, "EmpUserName", "EmpUserName"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpOldUser" })
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+            <button class="btn btn1 btn-success" id="btnewEmp" onclick="ShowAddNewEmp()">Submit</button>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+</div>
+<div class="row" id="divNewEmpTabData">
+    <div class="col-md-12"><hr /></div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.FirstName)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @class = "form-control", @id = "txtNEmpfirstname" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.LastName)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @class = "form-control", @id = "txtNEmplastname" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.MiddleName)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.MiddleName, htmlAttributes: new { @class = "form-control", @id = "txtNEmpmiddlename" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.DateofBirth)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.DateofBirth, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtNEmpDateofbirth", @readOnly = "true" })
+            </div>
+        </div>
+        <div class="col-md-1 text-right" style="margin-top:12px">@Html.LabelFor(model => model.EmpAge, htmlAttributes: new { @class = "hidelabel" })</div>
+        <div class="col-md-1 text-left">
+            @Html.TextBoxFor(model => model.EmpAge, htmlAttributes: new { @class = "form-control", @id = "txtNEmpAge" })
+
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.Sex)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.Sex, new SelectList(Model.EmpSexList, "ESex", "ESex"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpSex" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.MartialStatus)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.MartialStatus, new SelectList(Model.EmpMaritalStatusList, "EMaritalStatus", "EMaritalStatus"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpMaritalStatus" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-2">@Html.LabelFor(model => model.DateofMarriage)</div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.TextBoxFor(model => model.DateofMarriage, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtNempDateofMarriage", @readOnly = "true" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12"><hr /></div>
+    <div class="col-md-12">
+        @*Tab data*@
+        <ul class="nav nav-tabs" id="tabGroups" role="tablist">
+            <li class="active disabledTab"><a data-toggle="tab" href="#PersonalInfo">Personal Info</a></li>
+            @*<li><a data-toggle="tab" href="#Qualification">Qualification Details</a></li>
+                <li><a data-toggle="tab" href="#EmploymentHistory">Employment History</a></li>
+                <li><a data-toggle="tab" href="#UploadDoc">Upload Documents</a></li>
+                <li><a data-toggle="tab" href="#JoiningDetails">Joining Details</a></li>*@
+            <li class="disabledTab"><a data-toggle="tab" href="#Qualification">Qualification Details</a></li>
+            <li class="disabledTab"><a data-toggle="tab" href="#EmploymentHistory">Employment History</a></li>
+            <li class="disabledTab"><a data-toggle="tab" href="#UploadDoc">Upload Documents</a></li>
+            <li class="disabledTab"><a data-toggle="tab" href="#JoiningDetails">Joining Details</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="PersonalInfo" class="tab-pane fade in active">               
+                <div id="divFamilyGrid" class="row">
+                    <div class="col-md-12 change-tab">
+                        <div class="strike">
+                            <span>Family Details</span>
+                        </div>
+                        <div class="tabledynamic">
+                            <br />
+                            <table id="FamilyTable" class="table order-list familytable">
+                                <thead>
+                                    <tr>
+                                        <td style="text-align:center;color:#fff !important">S.No</td>
+                                        <td style="text-align:center;color:#fff !important">Name</td>
+                                        <td style="text-align:center;color:#fff !important">Date of Birth</td>
+                                        <td style="text-align:center;color:#fff !important">Age</td>
+                                        <td style="text-align:center;color:#fff !important">Gender</td>
+                                        <td style="text-align:center;color:#fff !important">Relationship</td>
+                                        <td style="text-align:center;color:#fff !important">Work</td>
+                                        <td style="text-align:center;color:#fff !important">Mobile No</td>
+                                        <td style="text-align:center;color:#fff !important"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center;width:1%">1</td>
+                                        <td style="text-align:center;width:20%">
+                                            <input type="text" class="form-control familymembername" style="text-transform:uppercase" />
+                                        </td>
+                                        <td style="width:20%">
+                                            <div class="col-md-12" style="width:100% !important;padding:0 !important">
+                                                <div class="form-group">
+                                                    <input class="form-control familymemberdob date-picker" readonly="readonly" />
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td style="width:10%"><input type="text" class="form-control familymemberage" readonly="readonly" value="0" /></td>
+                                        <td style="width:10%">
+                                            <select class="form-control dropdown-toggle familymembergender">
+                                                <option selected="selected" value="Select">Select</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td style="width:10%">
+                                            <select class="form-control dropdown-toggle familymemberrelation"></select>
+                                        </td>
+                                        <td style="width:10%"><input type="text" class="form-control familymemberwork" /></td>
+                                        <td style="width:10%"><input type="text" class="form-control familymembermobileno" maxlength="10" onkeypress="return IsNumeric(event)" /></td>
+                                        <td style="text-align:center"></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <input type="button" class="btn btn-default  btn-block" value="Add More" onclick="AddFamilymembergridnewrow();" />
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="divChildGrid" class="row">
+                    <div class="col-md-12 change-tab">
+                        <div class="strike">
+                            <span>Children Details</span>
+                        </div>
+                        <div class="tabledynamic">
+                            <br />
+                            <table id="ChildrenTable" class="table order-list Childrentable">
+                                <thead>
+                                    <tr>
+                                        <td style="text-align:center;color:#fff !important">S.No</td>
+                                        <td style="text-align:center;color:#fff !important">Name</td>
+                                        <td style="text-align:center;color:#fff !important">Date of Birth</td>
+                                        <td style="text-align:center;color:#fff !important">Age</td>
+                                        <td style="text-align:center;color:#fff !important">Gender</td>
+                                        <td style="text-align:center;color:#fff !important">Marital Status</td>
+                                        <td style="text-align:center;color:#fff !important"></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center;width:1%">1</td>
+                                        <td style="text-align:center;width:20%">
+                                            <input type="text" class="form-control childname" style="text-transform:uppercase" />
+                                        </td>
+                                        <td style="width:20%">
+                                            <div class="col-md-12" style="width:100% !important;padding:0 !important">
+                                                <div class="form-group">
+                                                    <input class="form-control childdob date-picker" readonly="readonly" />
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td style="width:10%"><input type="text" class="form-control childage" readonly="readonly" value="0" /></td>
+                                        <td style="width:20%">
+                                            <select class="form-control dropdown-toggle childgender">
+                                                <option selected="selected" value="Select">Select</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </td>
+                                        <td style="width:20%">
+                                            <select class="form-control dropdown-toggle childmaritalstatus">
+                                                <option selected="selected" value="Select">Select</option>
+                                                <option value="Male">Single</option>
+                                                <option value="Female">Married</option>
+                                                <option value="Male">Divorced</option>
+                                                <option value="Female">Widower</option>
+                                            </select>
+                                        </td>
+                                        <td style="text-align:center"></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <input type="button" class="btn btn-default  btn-block" value="Add More" onclick="AddChildgridnewrow();" />
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">Nominee Details</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12"><hr class="separationHr" /></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-2"> @Html.LabelFor(model => model.NomineeName)</div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.NomineeName, htmlAttributes: new { @class = "form-control", @id = "txtNEmpNomineeName" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">@Html.LabelFor(model => model.NomineeRelation)</div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.NomineeRelation, htmlAttributes: new { @class = "form-control", @id = "txtNEmpNomineeRelation" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">@Html.LabelFor(model => model.NomineeDateofBirth)</div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.NomineeDateofBirth, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtNEmpNomineeDateofBirth", @readOnly = "true" })
+                            </div>
+                        </div>
+                        <div class="col-md-2"> @Html.LabelFor(model => model.NomineeAge)</div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.NomineeAge, htmlAttributes: new { @class = "form-control", @id = "txtNEmpNomineeAge", @readOnly = "true" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-12">
+                        <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">Contact Information</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12"><hr class="separationHr" /></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.PermanentAddress)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextAreaFor(model => model.PermanentAddress, new { @id = "txtNEmpPresentAddress", @class = "form-control", @type = "text", @rows = "3" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.PresentAddress)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextAreaFor(model => model.PresentAddress, new { @id = "txtNEmpPresentAddress", @class = "form-control", @type = "text", @rows = "3" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.ContactWorkPhone)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.ContactWorkPhone, new { @id = "txtNEmpContactWorkPhone", @class = "form-control", @type = "text", maxlength = "10", onkeypress = "return IsNumeric(event)" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.ContactMobile)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.ContactMobile, new { @id = "txtNEmpPresentAddress", @class = "form-control", @type = "text", maxlength = "10", onkeypress = "return IsNumeric(event)" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.PlaceofBirth)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.PlaceofBirth, new { @id = "txtNEmpPlaceofBirth", @class = "form-control", @type = "text" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.LabelFor(model => model.WorkEmail)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.TextBoxFor(model => model.WorkEmail, new { @id = "txtNEmpContactMobile", @class = "form-control", @type = "text" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-right"> <button class="btn btn1 btn-success" id="btnewPINext" onclick="ShowQualificationTab()">Next</button></div>
+            </div>
+            <div id="Qualification" class="tab-pane fade">
+                <div class="col-md-12">
+                    <div id="divAcademicGrid" class="row">
+                        <div class="col-md-12 change-tab">
+                            <div class="strike1">
+                                <span>Academic Qualification</span>
+                            </div>
+                            <div class="tabledynamic">
+                                <br />
+                                <table id="AcademicTable" class="table order-list academictable">
+                                    <thead>
+                                        <tr>
+                                            <td style="text-align:center;color:#fff !important">S.No</td>
+                                            <td style="text-align:center;color:#fff !important">Class</td>
+                                            <td style="text-align:center;color:#fff !important">Name of University</td>
+                                            <td style="text-align:center;color:#fff !important">From</td>
+                                            <td style="text-align:center;color:#fff !important">To</td>
+                                            <td style="text-align:center;color:#fff !important">Percentage</td>
+                                            <td style="text-align:center;color:#fff !important"></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align:center">1</td>
+                                            <td>
+                                                <input type="text" class="form-control Academicclass" style="text-transform:uppercase" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control AcademicUniverity" />
+                                            </td>
+
+                                            <td><input type="text" class="form-control AcademicFrom" onkeypress="return IsNumeric(event)" /></td>
+                                            <td>
+                                                <input type="text" class="form-control AcademicTo" onkeypress="return IsNumeric(event)" />
+                                            </td>
+
+                                            <td><input type="text" class="form-control AcademicPercentage" onkeypress="return IsNumeric(event)" /></td>
+                                            <td style="text-align:center"></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                <input type="button" class="btn btn-default  btn-block" value="Add More" onclick="AddAcademicUniversitygridnewrow()" />
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divTechnicalGrid" class="row">
+                        <div class="col-md-12 change-tab">
+                            <div class="strike1">
+                                <span>Technical Qualification</span>
+                            </div>
+                            <div class="tabledynamic">
+                                <br />
+                                <table id="TechnicalQuaTable" class="table order-list technicalquatable">
+                                    <thead>
+                                        <tr>
+                                            <td style="text-align:center;color:#fff !important">S.No</td>
+                                            <td style="text-align:center;color:#fff !important">Technical Skills</td>
+                                            <td style="text-align:center;color:#fff !important">Year Of Experience</td>
+                                            <td style="text-align:center;color:#fff !important"></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align:center">1</td>
+                                            <td>
+                                                <input type="text" class="form-control technicalskil" />
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control technicalskilExp" onkeypress="return IsNumeric(event)" />
+                                            </td>
+                                            <td style="text-align:center"></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                <input type="button" class="btn btn-default  btn-block" value="Add More" onclick="AddTechnicalQualificationgridnewrow()" />
+                                            </td>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 text-right">
+                    <input type="text" id="textq" value="Qualification" />
+                    <button class="btn btn1 btn-success" id="btnewQualificationBack" onclick="ShowPITab()">Back</button>
+                    <button class="btn btn1 btn-success" id="btnewQualificationNext" onclick="ShowHistoryTab()">Next</button>
+                </div>
+            </div>
+            <div id="EmploymentHistory" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4 text-center">
+                        <div class="form-group">
+                            <input id="rbtExperience" name="ExperiencHistory" value="Experience" type="radio" style="font-weight:bold;">Experience
+                            <input id="rbtFresher" name="ExperiencHistory" value="Fresher" type="radio" checked>Fresher
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="col-md-12">
+                    <div id="divExperienceHistorGrid" class="row">
+                        <div class="col-md-12 change-tab">
+                            <div class="strike1">
+                                <span>Experience Details</span>
+                            </div>
+                            <div class="tabledynamic">
+                                <br />
+                                <table id="ExperienceTable" class="table order-list experiencetable">
+                                    <thead>
+                                        <tr>
+                                            <td style="text-align:center;color:#fff !important">S.No</td>
+                                            <td style="text-align:center;color:#fff !important">Name of Organisation</td>
+                                            <td style="text-align:center;color:#fff !important">From</td>
+                                            <td style="text-align:center;color:#fff !important">To</td>
+                                            <td style="text-align:center;color:#fff !important">Role/Designation</td>
+                                            <td style="text-align:center;color:#fff !important"></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="text-align:center">1</td>
+                                            <td>
+                                                <input type="text" class="form-control experiencOrganisationname" style="text-transform:uppercase" />
+                                            </td>
+                                            <td><input type="text" class="form-control experirenceFrom" onkeypress="return IsNumeric(event)" /></td>
+                                            <td>
+                                                <input type="text" class="form-control experirenceTo" onkeypress="return IsNumeric(event)" />
+                                            </td>
+                                            <td><input type="text" class="form-control experirenceRole" /></td>
+                                            <td style="text-align:center"></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                <input type="button" class="btn btn-default  btn-block" value="Add More" onclick="AddExperiencegridnewrow()" />
+                                            </td>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-12 text-right">
+                    <input type="text" id="textHistory" value="EmploymentHistory" />
+                    <button class="btn btn1 btn-success" id="btnewEmpHistoryBack" onclick="ShowQualificationTab()">Back</button>
+                    <button class="btn btn1 btn-success" id="btnewEmpHistoryNext" onclick="ShowUplDocTab()">Next</button>
+                </div>
+            </div>
+            <div id="UploadDoc" class="tab-pane fade">
+                <div class="col-md-12">
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.DesignatedAs)
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.DropDownListFor(model => model.DesignatedAs, new SelectList(Model.EmpRoleList, "UserRoleID", "UserRoleCode"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlNEmpDesignatedAs" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.LabelFor(model => model.JoiningDate)
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.TextBoxFor(model => model.JoiningDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtNEmpJoiningDate", @readOnly = "true" })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12 text-right">
+                    <input type="text" id="textUD" value="UploadDoc" />
+                    <button class="btn btn1 btn-success" id="btnewEmpUpDocBack" onclick="ShowHistoryTab()">Back</button>
+                    <button class="btn btn1 btn-success" id="btnewEmpUpDocNext" onclick="ShowJoiningDataTab()">Next</button>
+                </div>
+            </div>
+            <div id="JoiningDetails" class="tab-pane fade">
+                <div class="col-md-12"></div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12 text-right">
+                    <input type="text" id="textJD" value="JoiningDetails" />
+                    <button class="btn btn1 btn-success" id="btnewEmpJoiningDataBack" onclick="ShowUplDocTab()">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <br />
+        <div class="text-center">
+            <div id="divAddNewEmpInfoMsg" class="alert alert-danger hidden">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#divNewEmpTabData").addClass("hidden");
+        $("#divMainData").removeClass("hidden");
+        $("#divNewOldUser").addClass("hidden");
+        $('.nav-tabs li:eq(0) a').tab('show');
+        //$('.nav-tabs li:eq(1) a').addClass('disabledTab');
+        //$('.nav-tabs li:eq(2) a').addClass('disabledTab');
+        //$('.nav-tabs li:eq(3) a').addClass('disabledTab');
+        //$('.nav-tabs li:eq(4) a').addClass('disabledTab');
+        //$('.nav-tabs li:eq(5) a').addClass('disabledTab');
+        $("#txtNEmpDateofbirth").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+            onClose: function (selectedDate) {
+                empagecal();
+            }
+        }).datepicker("setDate", new Date());
+        $("#txtNempDateofMarriage").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+        $("#txtNEmpNomineeDateofBirth").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+            onClose: function (selectedDate) {
+                EmpNomineeagecal();
+            }
+        }).datepicker("setDate", new Date());
+        $("#txtNEmpJoiningDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+        ///start of family member info grid events*************************************************************//
+        $('#FamilyTable').on('change', '.familymembergender', function () {
+            var genderindex = $(this).find("option:selected").index();
+            var gender = $(this).find("option:selected").val();
+            var row = $(this).closest('tr'); // get the row
+            var ddlrelation = row.find('.familymemberrelation'); // get the other select in the same row
+            if (genderindex != 0) {
+                ddlrelation.empty().append(' <option selected="selected" value="Select">Select</option>');
+                if (gender === 'Male') {
+                    ddlrelation.append($("<option></option>").val('Father').html('Father'));
+                    ddlrelation.append($("<option></option>").val('Husband').html('Husband'));
+                    ddlrelation.append($("<option></option>").val('Brother').html('Brother'));
+                }
+                else if (gender === 'Female') {
+                    ddlrelation.append($("<option></option>").val('Mother').html('Mother'));
+                    ddlrelation.append($("<option></option>").val('Wife').html('Wife'));
+                    ddlrelation.append($("<option></option>").val('Sister').html('Sister'));
+                }
+            }
+            else {
+                var ddlr = $("#ddlRelation");
+                ddlr.empty().append(' <option selected="selected" value="Select">Select</option>');
+            }
+        });
+        //$(document).on("click", ".familymemberdob", function () {
+        //    $(this).datepicker({
+        //    dateFormat: 'dd-M-yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    showOn: "button",
+        //    buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+        //    maxDate: 'dateToday',
+        //    yearRange: "-100:+0",
+        //    orientation: "bottom left",
+        //    onClose: function (selectedDate) {
+        //        var row = $(this).closest('tr');
+        //        debugger;
+        //        var From_date = new Date(selectedDate);
+        //        var To_date = new Date();
+        //        var diff_date = To_date - From_date;
+        //        var years = Math.floor(diff_date / 31536000000);
+        //        alert(years);
+        //        row.find('.familymemberage').val(years);
+        //    }
+        //    }).datepicker("setDate", new Date());
+
+        //  });
+        //$(".familymemberdob.ui-datepicker-trigger").css("bacgkground-color", "red");
+        //$(this).datepicker({
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    dateFormat: 'yy-mm-dd'
+        //}).datepicker("show");
+        //});
+
+        $(".familymemberdob").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+            orientation: "bottom left",
+            //onClose: function (selectedDate) {
+            //    empagecal();
+            //}
+        }).datepicker("setDate", new Date());
+
+        $('#FamilyTable').on('change', '.familymemberdob', function () {
+            var fmemberdob = $(this).val();
+            var row = $(this).closest('tr'); // get the row
+            var fmemeberage = row.find('.familymemberage');
+            var From_date = new Date(fmemberdob);
+            var To_date = new Date();
+            var diff_date = To_date - From_date;
+            var years = Math.floor(diff_date / 31536000000);
+            //alert(years);
+            row.find('.familymemberage').val(years);
+            // fmemeberage.val(years);
+        });
+        $("table.order-list.familytable").on("click", ".ibtnAddnewempFamilyTabledelete", function (event) {
+            $(this).closest("tr").remove();
+        });
+
+        ///end of family member info grid events//
+        ///start of Child info grid events************************************************************//
+        $(".childdob").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+            orientation: "bottom left",
+            //onClose: function (selectedDate) {
+            //    empagecal();
+            //}
+        }).datepicker("setDate", new Date());
+
+        $('#ChildrenTable').on('change', '.childdob', function () {
+            var fmemberdob = $(this).val();
+            var row = $(this).closest('tr'); // get the row
+
+            var From_date = new Date(fmemberdob);
+            var To_date = new Date();
+            var diff_date = To_date - From_date;
+            var years = Math.floor(diff_date / 31536000000);
+            //alert(years);
+            row.find('.childage').val(years);
+            // fmemeberage.val(years);
+        });
+        $("table.order-list.Childrentable").on("click", ".ibtnAddnewempChildTabledelete", function (event) {
+            $(this).closest("tr").remove();
+        });
+        ///end of Child info grid events//
+        ///start of Academic info grid events***********************************************************//
+        $("table.order-list.academictable").on("click", ".ibtnAddAcademicClassdelete", function (event) {
+            $(this).closest("tr").remove();
+        });
+        ///end of Academic info grid events//
+        ///start of Academic info grid events***********************************************************//
+        $("table.order-list.technicalquatable").on("click", ".ibtnAddTechSkilldelete", function (event) {
+            $(this).closest("tr").remove();
+        });
+        ///end of Academic info grid events//
+        ///start of Experience info grid events***********************************************************//
+        $("#divExperienceHistorGrid").addClass("hidden");
+        $("input:radio[name='ExperiencHistory']").change(function () {
+            let expval = $(this).val();
+
+            if (expval === "Experience") {
+                $("#divExperienceHistorGrid").removeClass("hidden");
+
+            }
+            else {
+                $("#divExperienceHistorGrid").addClass("hidden");
+            }
+            ClearExpGrid();
+        });
+        $("table.order-list.experiencetable").on("click", ".ibtnAddRoledelete", function (event) {
+            $(this).closest("tr").remove();
+        });
+        ///end of Experience info grid events//
+
+
+    });
+    function ShowAddNewEmp() {
+        $("#divNewEmpTabData").removeClass("hidden");
+    }
+    function ShowPITab() {
+        $('.nav-tabs li:eq(0) a').tab('show');
+    }
+    function ShowQualificationTab() {
+        $('.nav-tabs li:eq(1) a').tab('show');
+    }
+    function ShowHistoryTab() {
+        $('.nav-tabs li:eq(2) a').tab('show');
+    }
+    function ShowUplDocTab() {
+        $('.nav-tabs li:eq(3) a').tab('show');
+    }
+    function ShowJoiningDataTab() {
+        $('.nav-tabs li:eq(4) a').tab('show');
+    }
+    function NewEmpJoiningTypeChange() {
+        let jtypeindex = $("#ddlNEmpjoinType select:option").index();
+        let jtype = $("#ddlNEmpjoinType option:selected").val();
+        if (jtypeindex === 0) {
+            $("#divNewOldUser").addClass("hidden");
+        }
+        else if (jtype === "New") {
+            $("#divNewOldUser").addClass("hidden");
+        } else { $("#divNewOldUser").removeClass("hidden"); }
+    }
+    function empagecal() {
+        if ($("#txtNEmpDateofbirth").val() != "") {
+            var From_date = new Date($("#txtNEmpDateofbirth").val());
+            var To_date = new Date();
+            var diff_date = To_date - From_date;
+            var years = Math.floor(diff_date / 31536000000);
+            $("#txtNEmpAge").val(years);
+        }
+        else {
+            //alert("Select Date of Birth");
+            $("#txtNEmpAge").val("");
+            return false;
+        }
+    }
+    function EmpNomineeagecal() {
+        if ($("#txtNEmpNomineeDateofBirth").val() != "") {
+            var From_date = new Date($("#txtNEmpNomineeDateofBirth").val());
+            var To_date = new Date();
+            var diff_date = To_date - From_date;
+            var years = Math.floor(diff_date / 31536000000);
+            $("#txtNEmpNomineeAge").val(years);
+        }
+        else {
+            //alert("Select Date of Birth");
+            $("#txtNEmpNomineeAge").val("");
+            return false;
+        }
+    }
+    function IsNumeric(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode;
+        if ((iKeyCode < 48 || iKeyCode > 57))
+            return false;
+    }
+    ///start of family member info grid***********************************************************//
+    function AddFamilymembergridnewrow() {
+        isValid = true;
+        var errorMsg = "";
+        var namecount = 0, dobcount = 0, gendercount = 0, relationcount = 0, workcount = 0, mobilecount = 0, fmemberagecount = 0;
+        var selectedfnames = [];
+        $("#FamilyTable tbody tr").each(function () {
+            let currentRow = $(this);
+            let name = currentRow.find("td").eq(1).find("input[type='text']").val();
+            // let dob = currentRow.find("td").eq(2).find("input[type='text']").val();
+            let dob = currentRow.find("td").eq(2).find(".familymemberdob").val();
+            let age = currentRow.find("td").eq(3).find("input[type='text']").val();
+            var gender = currentRow.find("td").eq(4).find("select option:selected").index();
+            var relation = currentRow.find("td").eq(5).find("select option:selected").index();
+            var work = currentRow.find("td").eq(6).find("input[type='text']").val();
+            var mbno = currentRow.find("td").eq(7).find("input[type='text']").val();
+            if (age === "0" || age === "") { fmemberagecount = fmemberagecount + 1; }
+            // console.log(currentRow);
+
+            if (name === "") { namecount = namecount + 1; }
+            else { selectedfnames.push(name); }
+            if (dob === "") { dobcount = dobcount + 1; }
+            if (gender === 0) { gendercount = gendercount + 1; }
+            if (relation === 0) { relationcount = relationcount + 1; }
+            if (work === "") { workcount = workcount + 1; }
+            if (mbno === "") { mobilecount = mobilecount + 1; }
+        });
+        if (namecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Name</p>";
+            isValid = false;
+        }
+        if (dobcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Family Member Date of Birth</p>";
+            isValid = false;
+        }
+        if (gendercount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Gender</p>";
+            isValid = false;
+        }
+        else if (relationcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Relation</p>";
+            isValid = false;
+        }
+        if (workcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Work of Family Member</p>";
+            isValid = false;
+        }
+        if (mobilecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Family Member Mobile No</p>";
+            isValid = false;
+        }
+        var duplicatelist = selectedfnames.filter(i => selectedfnames.filter(ii => ii === i).length > 1);
+        if (duplicatelist.length > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Duplicate Family Member Entered</p>";
+            isValid = false;
+        }
+        if (fmemberagecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Valid family member Age</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror1 = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").append(finalerror1 + errorMsg + "</div>");
+            $("#divAddNewEmpInfoMsg").addClass("alert-danger");
+            $("#divAddNewEmpInfoMsg").removeClass("hidden alert-success");
+            return false;
+        }
+        else {
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").addClass("hidden");
+            var count = $("#FamilyTable tbody tr").length;
+            var rowno = count + 1;
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td style="text-align:center">' + rowno + '</td>';
+            cols += ' <td style="text-align:center;width:20%"><input type="text" class="form-control familymembername" style="text-transform:uppercase" /></td>';
+            cols += '<td style="width:20%"> <div class="col-md-12" style="width:100% !important;padding:0 !important"> ';
+            cols += '<div class="form-group"><input class="form-control familymemberdob date-picker" readonly="readonly" /></div></div></td>';
+            cols += '<td style="width:10%"><input type="text" class="form-control familymemberage" readonly="readonly"  value="0"/></td>';
+            cols += '<td style="width:10%"> <select class="form-control dropdown-toggle familymembergender">';
+            cols += ' <option selected="selected" value="Select">Select</option><option value="Male">Male</option><option value="Female">Female</option></select>';
+            cols += '<td style="width:10%"><select class="form-control dropdown-toggle familymemberrelation"></select></td>';
+            cols += '<td style="width:10%"><input type="text" class="form-control familymemberwork" /></td>';
+            cols += '<td style="width:10%"><input type="text" class="form-control familymembermobileno" maxlength="10" onkeypress="return IsNumeric(event)" /></td>';
+            cols += '<td style="text-align:center"><input type="button" class="ibtnAddnewempFamilyTabledelete btn btn-md btn-danger" value="Delete"></td>';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            newRow.append(cols);
+            $("table.order-list.familytable").append(newRow);
+            $("#FamilyTable tbody tr:last").each(function () {
+                $(this).find("td").eq(2).find(".familymemberdob").datepicker({
+                    dateFormat: 'dd-M-yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showOn: "button",
+                    buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+                    maxDate: 'dateToday',
+                    yearRange: "-100:+0",
+                    orientation: "bottom left",
+                }).datepicker("setDate", new Date());
+            });
+        }
+
+    }
+    ///end of family member info grid//
+    ///start of Child info grid***********************************************************//
+    function AddChildgridnewrow() {
+
+        isValid = true;
+        var errorMsg = "";
+        var childnamecount = 0, childdobcount = 0, childgendercount = 0, childmaritalstatuscount = 0, childagecount = 0;
+        var selectedchildnames = [];
+        $("#ChildrenTable tbody tr").each(function () {
+            let currentRow = $(this);
+            let name = currentRow.find("td").eq(1).find("input[type='text']").val();
+            let dob = currentRow.find("td").eq(2).find(".childdob").val();
+            let age = currentRow.find("td").eq(3).find("input[type='text']").val();
+            let gender = currentRow.find("td").eq(4).find("select option:selected").index();
+            let maritalstatus = currentRow.find("td").eq(5).find("select option:selected").index();
+
+            // console.log(currentRow);
+            if (age === "0" || age === "") { childagecount = childagecount + 1; }
+            if (name === "") { childnamecount = childnamecount + 1; } else { selectedchildnames.push(name); }
+            if (dob === "") { childdobcount = childdobcount + 1; }
+            if (gender === 0) { childgendercount = childgendercount + 1; }
+            if (maritalstatus === 0) { childmaritalstatuscount = childmaritalstatuscount + 1; }
+        });
+        if (childnamecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Child Name</p>";
+            isValid = false;
+        }
+        if (childdobcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Child Date of Birth</p>";
+            isValid = false;
+        }
+        if (childgendercount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Child Gender</p>";
+            isValid = false;
+        }
+        if (childagecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Valid Child Age</p>";
+            isValid = false;
+        }
+        if (childmaritalstatuscount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Child Marital Status</p>";
+            isValid = false;
+        }
+        var duplicatelist = selectedchildnames.filter(i => selectedchildnames.filter(ii => ii === i).length > 1);
+        if (duplicatelist.length > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Duplicate Child Member Entered</p>";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            var finalerror1 = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").append(finalerror1 + errorMsg + "</div>");
+            $("#divAddNewEmpInfoMsg").addClass("alert-danger");
+            $("#divAddNewEmpInfoMsg").removeClass("hidden alert-success");
+            return false;
+        }
+        else {
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").addClass("hidden");
+            var count = $("#ChildrenTable tbody tr").length;
+            var rowno = count + 1;
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td style="text-align:center">' + rowno + '</td>';
+            cols += '<td style="text-align:center;width:20%"><input type="text" class="form-control childname" style="text-transform:uppercase" /></td>';
+            cols += '<td style="width:20%"><div class="col-md-12" style="width:100% !important;padding:0 !important"><div class="form-group">';
+            cols += '<input class="form-control childdob date-picker" readonly="readonly" /></div></div></td>';
+            cols += '<td style="width:10%"><input type="text" class="form-control childage" readonly="readonly"  value="0"/></td>';
+            cols += '<td style="width:10%">';
+            cols += '<select class="form-control dropdown-toggle childgender">';
+            cols += '<option selected="selected" value="Select">Select</option>';
+            cols += '<option value="Male">Male</option><option value="Female">Female</option></select></td>';
+            cols += '<td style="width:10%"><select class="form-control dropdown-toggle childmaritalstatus">';
+            cols += '<option selected="selected" value="Select">Select</option>';
+            cols += '<option value="Male">Single</option>';
+            cols += '<option value="Female">Married</option>';
+            cols += '<option value="Male">Divorced</option>';
+            cols += '<option value="Female">Widower</option>';
+            cols += '</select></td >';
+            cols += '<td style="text-align:center"><input type="button" class="ibtnAddnewempChildTabledelete btn btn-md btn-danger" value="Delete"></td>';
+
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            //cols += '';
+            newRow.append(cols);
+            $("table.order-list.Childrentable").append(newRow);
+            $("#ChildrenTable tbody tr:last").each(function () {
+                $(this).find("td").eq(2).find(".childdob").datepicker({
+                    dateFormat: 'dd-M-yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showOn: "button",
+                    buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+                    maxDate: 'dateToday',
+                    yearRange: "-100:+0",
+                    orientation: "bottom left",
+                }).datepicker("setDate", new Date());
+            });
+        }
+
+    }
+    ///end of Child info grid//
+    ///start of Academinc info grid***********************************************************//
+    function AddAcademicUniversitygridnewrow() {
+        isValid = true;
+        var errorMsg = "";
+        var classcount = 0, universitycount = 0, fromcount = 0, tocount = 0, percentagecount = 0, yearlengthcount = 0, toyearlengthcount = 0;
+        var selectedclassnames = [];
+        $("#AcademicTable tbody tr").each(function () {
+            let currentRow = $(this);
+            let Academicclass = currentRow.find("td").eq(1).find("input[type='text']").val();
+            let university = currentRow.find("td").eq(2).find("input[type='text']").val();
+            let fromyear = currentRow.find("td").eq(3).find("input[type='text']").val();
+            let toyear = currentRow.find("td").eq(4).find("input[type='text']").val();
+            let percentage = currentRow.find("td").eq(5).find("input[type='text']").val();
+
+            // console.log(currentRow);
+            if (Academicclass === "") { classcount = classcount + 1; }
+            if (university === "") { universitycount = universitycount + 1; } else { selectedclassnames.push(Academicclass); }
+            if (fromyear === "") { fromcount = fromcount + 1; }
+            else if (fromyear.length != 4) { yearlengthcount = yearlengthcount + 1; }
+            if (toyear === "") { tocount = tocount + 1; }
+            else if (toyear.length != 4) { toyearlengthcount = toyearlengthcount + 1; }
+            if (percentage === "") { percentagecount = percentagecount + 1; }
+        });
+        if (classcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Academic Class</p>";
+            isValid = false;
+        }
+        if (universitycount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter University</p>";
+            isValid = false;
+        }
+        if (fromcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Academic From Year</p>";
+            isValid = false;
+        }
+        else if (yearlengthcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Valid Academic From Year</p>";
+            isValid = false;
+        }
+        if (tocount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Academic To Year</p>";
+            isValid = false;
+        }
+        else if (toyearlengthcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Valid Academic To Year</p>";
+            isValid = false;
+        }
+        if (percentagecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Percentage</p>";
+            isValid = false;
+        }
+        var duplicatelist = selectedclassnames.filter(i => selectedclassnames.filter(ii => ii === i).length > 1);
+        if (duplicatelist.length > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Duplicate Class Entered</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror1 = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").append(finalerror1 + errorMsg + "</div>");
+            $("#divAddNewEmpInfoMsg").addClass("alert-danger");
+            $("#divAddNewEmpInfoMsg").removeClass("hidden alert-success");
+            return false;
+        }
+        else {
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").addClass("hidden");
+            var count = $("#AcademicTable tbody tr").length;
+            var rowno = count + 1;
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td style="text-align:center">' + rowno + '</td>';
+            cols += '<td><input type="text" class="form-control Academicclass" style="text-transform:uppercase" /></td>';
+            cols += '<td><input class="form-control AcademicUniverity" /></td>';
+            cols += '<td><input type="text" class="form-control AcademicFrom" onkeypress="return IsNumeric(event)" /></td>';
+            cols += '<td><input type="text" class="form-control AcademicTo" onkeypress="return IsNumeric(event)" /></td>';
+            cols += '<td><input type="text" class="form-control AcademicPercentage" onkeypress="return IsNumeric(event)" /></td>';
+            cols += '<td style="text-align:center"><input type="button" class="ibtnAddAcademicClassdelete btn btn-md btn-danger" value="Delete"></td>';
+            newRow.append(cols);
+            $("table.order-list.academictable").append(newRow);
+        }
+    }
+    ///end of Academinc info grid//
+    ///start of Technical info grid***********************************************************//
+    function AddTechnicalQualificationgridnewrow() {
+
+        isValid = true;
+        var errorMsg = "";
+        var skillcount = 0, experiencecount = 0;
+        var selectedskills = [];
+        $("#TechnicalQuaTable tbody tr").each(function () {
+            let currentRow = $(this);
+            let techskill = currentRow.find("td").eq(1).find("input[type='text']").val();
+            let experience = currentRow.find("td").eq(2).find("input[type='text']").val();
+
+
+            // console.log(currentRow);
+            if (techskill === "") { skillcount = skillcount + 1; } else { selectedskills.push(techskill); }
+            if (experience === "") { experiencecount = experiencecount + 1; }
+
+        });
+        if (skillcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Technical Skills</p>";
+            isValid = false;
+        }
+        if (experiencecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Technical Skills Experience</p>";
+            isValid = false;
+        }
+
+        var duplicatelist = selectedskills.filter(i => selectedskills.filter(ii => ii === i).length > 1);
+        if (duplicatelist.length > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Duplicate Techinical Skill Entered</p>";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            var finalerror1 = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").append(finalerror1 + errorMsg + "</div>");
+            $("#divAddNewEmpInfoMsg").addClass("alert-danger");
+            $("#divAddNewEmpInfoMsg").removeClass("hidden alert-success");
+            return false;
+        }
+        else {
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").addClass("hidden");
+            var count = $("#TechnicalQuaTable tbody tr").length;
+            var rowno = count + 1;
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td style="text-align:center">' + rowno + '</td>';
+            cols += '<td><input type="text" class="form-control technicalskil" /></td>';
+            cols += '<td><input class="form-control technicalskilExp" onkeypress="return IsNumeric(event)"/></td>';
+            cols += '<td style="text-align:center"><input type="button" class="ibtnAddTechSkilldelete btn btn-md btn-danger" value="Delete"></td>';
+
+            newRow.append(cols);
+            $("table.order-list.technicalquatable").append(newRow);
+
+        }
+    }
+    ///end of Technical info grid//
+    ///start of Experience info grid***********************************************************//
+    function AddExperiencegridnewrow() {
+        isValid = true;
+        var errorMsg = "";
+        let organisationnamecount = 0, fromyearcount = 0, toyearcount = 0, rolecount = 0, expyearlengthcount = 0, exptoyearlengthcount = 0;
+        var selectedorgnames = [];
+        $("#ExperienceTable tbody tr").each(function () {
+            let currentRow = $(this);
+            let Organisation = currentRow.find("td").eq(1).find("input[type='text']").val();
+            let fromyear = currentRow.find("td").eq(2).find("input[type='text']").val();
+            let toyear = currentRow.find("td").eq(3).find("input[type='text']").val();
+            let role = currentRow.find("td").eq(4).find("input[type='text']").val();
+            // console.log(currentRow);           
+            if (Organisation === "") { organisationnamecount = organisationnamecount + 1; } else { selectedorgnames.push(Organisation); }
+            if (fromyear === "") { fromyearcount = fromyearcount + 1; }
+           
+            else if (fromyear.length != 4) { expyearlengthcount = expyearlengthcount + 1; }
+            if (toyear === "") { toyearcount = toyearcount + 1; }
+            else if (toyear.length != 4) { exptoyearlengthcount = exptoyearlengthcount + 1; }
+            if (role === "") { rolecount = rolecount + 1; }
+        });
+        if (organisationnamecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Experience Organisation</p>";
+            isValid = false;
+        }
+        if (fromyearcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Experience From Year</p>";
+            isValid = false;
+        }
+        else if (expyearlengthcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Valid Experience From Year</p>";
+            isValid = false;
+        }
+        if (toyearcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Experience To Year</p>";
+            isValid = false;
+        }
+        else if (exptoyearlengthcount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Valid Experience To Year</p>";
+            isValid = false;
+        }
+        if (rolecount > 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Role</p>";
+            isValid = false;
+        }
+        //var duplicatelist = selectedorgnames.filter(i => selectedorgnames.filter(ii => ii === i).length > 1);
+        //if (duplicatelist.length > 0) {
+        //    errorMsg += "<p style='margin-top:-5px!important;'>Duplicate Organisation Entered</p>";
+        //    isValid = false;
+        //}
+        if (!isValid) {
+            var finalerror1 = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").append(finalerror1 + errorMsg + "</div>");
+            $("#divAddNewEmpInfoMsg").addClass("alert-danger");
+            $("#divAddNewEmpInfoMsg").removeClass("hidden alert-success");
+            return false;
+        }
+        else {
+            $("#divAddNewEmpInfoMsg").text("");
+            $("#divAddNewEmpInfoMsg").addClass("hidden");
+            var count = $("#ExperienceTable tbody tr").length;
+            var rowno = count + 1;
+            var newRow = $("<tr>");
+            var cols = "";
+            cols += '<td style="text-align:center">' + rowno + '</td>';
+            cols += '<td><input type="text" class="form-control experiencOrganisationname" style="text-transform:uppercase" /></td>';
+            cols += '<td><input type="text" class="form-control experirenceFrom" onkeypress="return IsNumeric(event)" /></td>';
+            cols += '<td><input type="text" class="form-control experirenceTo" onkeypress="return IsNumeric(event)" /></td>';
+            cols += '<td><input type="text" class="form-control experirenceRole" /></td>';
+            cols += '<td style="text-align:center"><input type="button" class="ibtnAddRoledelete btn btn-md btn-danger" value="Delete"></td>';
+            newRow.append(cols);
+            $("table.order-list.experiencetable").append(newRow);
+        }
+    }
+    function ClearExpGrid() {
+        $("#ExperienceTable tbody tr").each(function () {
+            let currentRow = $(this);
+            currentRow.find("td").eq(1).find("input[type='text']").val("");
+            currentRow.find("td").eq(2).find("input[type='text']").val("");
+            currentRow.find("td").eq(3).find("input[type='text']").val("");
+            currentRow.find("td").eq(4).find("input[type='text']").val("");
+        });
+    }
+    ///end of Experience info grid//
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

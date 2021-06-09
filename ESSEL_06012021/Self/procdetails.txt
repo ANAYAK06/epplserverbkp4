@@ -1,0 +1,11 @@
+Overhead:-
+proc:-spGetCCAccurateDetails
+spInsertUpdateCCAccurate
+spInsertDepValue
+spGetAllDepriciationConfigGrid
+spGetCCdepreciationValue
+spGetwefdatedepreciation
+
+
+Master operaration 334 make false
+Create column "wefdate"in CCAccruedValues table

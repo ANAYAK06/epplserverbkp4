@@ -1,0 +1,1041 @@
+﻿@model EsselTestLocalApplication.Models.HR.HRRules
+@{
+    ViewBag.Title = "HRRules";
+    Layout = "~/Views/Shared/EsselMaster.cshtml";
+}
+
+@Scripts.Render("~/bundles/datepicker/js")
+@Styles.Render("~/bundles/datepicker/css")
+@Scripts.Render("~/bundles/Accounts")
+@Styles.Render("~/bundles/Accounts/css")
+<style>
+    .rowspace {
+        margin-top: 5px;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 style="text-align:left;font-weight:bold">HR Rules</h4>
+                </div>
+                <div class="body">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <!-- Example Tabs Left-->
+                            <div class="card-inner">
+                                <ul class="nav nav-tabs" id="tabHRRules" role="tablist">
+
+                                    <li><a data-toggle="tab" href="#SalaryHeads">Salary Heads</a></li>
+                                    <li><a data-toggle="tab" href="#PFAndESIAndTDS">PF,ESI,TDS</a></li>
+                                    <li><a data-toggle="tab" href="#Holidays">Holidays</a></li>
+                                    <li><a data-toggle="tab" href="#ELorPaidLeaveRules">EL/Paid Leave</a></li>
+                                    <li><a data-toggle="tab" href="#Gratuity">Gratuity</a></li>
+                                    <li><a data-toggle="tab" href="#LTAAndSalaryAdvance">LTA & Salary Advance</a></li>
+                                    <li><a data-toggle="tab" href="#NoticePeriod">Notice Period </a></li>
+                                    <li><a data-toggle="tab" href="#MinimumWages">Minimum Wages(For Labours)</a></li>
+                                </ul>
+                                <div class="tab-content">
+
+                                    <div id="SalaryHeads" class="tab-pane fade in  active">
+                                        @*SalaryHeads*@
+                                        <div class="row" id="divAddSalaryHead">
+                                            <div class="row rowspace">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-2">
+                                                    @Html.LabelFor(model => model.SalaryHeadsData.HeadType)
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @Html.DropDownListFor(model => model.SalaryHeadsData.HeadType, new SelectList(Model.HeadTypeslist, "HeadTypeName", "HeadTypeName"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlSalaryHeadType" })
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-2">@Html.LabelFor(model => model.SalaryHeadsData.HeadName)</div>
+                                                <div class="col-md-4">
+                                                    @Html.TextBoxFor(model => model.SalaryHeadsData.HeadName, htmlAttributes: new { @class = "form-control", @id = "txtSalaryHeadName" })
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-2"></div>
+                                                <div class="col-md-4 ">
+                                                    <br />
+                                                    <button class="btn btn1 btn-success" id="btnSalaryHeadSubmit" onclick="SubmitSalaryHeadData()">Submit</button>
+                                                    <button class="btn btn1 btn-success" id="btnSalaryHeadReset" onclick="ResetSalaryHeadData()">Reset</button>
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="text-center">
+                                                    <br />
+                                                    <div id="divSalaryHeadInfoMsg" class="alert alert-danger hidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row" id="divGridSalaryHead">
+                                            @Html.Action("GetAllSalaryHeads", "HR")
+                                        </div>
+                                    </div>
+
+                                    <div id="PFAndESIAndTDS" class="tab-pane fade">
+                                        @*PFAndESIAndTDS*@
+                                        <div class="container">
+                                            <div class="col-md-10">
+                                                <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">PF Rules</h5>
+                                            </div>
+                                            <div class="col-md-10"><hr class="separationHr" /></div>
+
+                                            <div class="col-md-10 rowspace">
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.PFRulesData.EmployeeContribution)
+                                                    @Html.TextBoxFor(model => model.PFRulesData.EmployeeContribution, htmlAttributes: new { @class = "form-control", @id = "txtPFEmployeeContribution", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.PFRulesData.EmployerContribution)
+                                                    @Html.TextBoxFor(model => model.PFRulesData.EmployerContribution, htmlAttributes: new { @class = "form-control", @id = "txtPFEmployerContribution", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.PFRulesData.PFAdminCharge)
+                                                    @Html.TextBoxFor(model => model.PFRulesData.PFAdminCharge, htmlAttributes: new { @class = "form-control", @id = "txtPFAdminCharge", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-4 rowspace">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.PFRulesData.WithEffectDate)
+                                                        @Html.TextBoxFor(model => model.PFRulesData.WithEffectDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtPFWithEffectDate", @readOnly = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <br />
+                                                <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">ESI Rules</h5>
+                                            </div>
+                                            <div class="col-md-10"><hr class="separationHr" /></div>
+                                            <div class="col-md-10 rowspace">
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.ESIRulesData.ESIAdminCharge)
+                                                    @Html.TextBoxFor(model => model.ESIRulesData.ESIAdminCharge, htmlAttributes: new { @class = "form-control", @id = "txtESIEmployeeContribution", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.ESIRulesData.ESIPercentage)
+                                                    @Html.TextBoxFor(model => model.ESIRulesData.ESIPercentage, htmlAttributes: new { @class = "form-control", @id = "txtESIEmployerContribution", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.ESIRulesData.WithEffectDate)
+                                                        @Html.TextBoxFor(model => model.ESIRulesData.WithEffectDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtESIWithEffectDate", @readOnly = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <br />
+                                                <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">TDS Rules</h5>
+                                            </div>
+                                            <div class="col-md-10"><hr class="separationHr" /></div>
+                                            <div class="col-md-10 rowspace">
+                                                <div class="col-md-4 ">
+                                                    @Html.LabelFor(model => model.TDSRulesData.TDSApplicaleToWhome)
+                                                    @Html.TextBoxFor(model => model.TDSRulesData.TDSApplicaleToWhome, htmlAttributes: new { @class = "form-control", @id = "txtTDSEmployeeContribution", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.TDSRulesData.PercentageInSalary)
+                                                    @Html.TextBoxFor(model => model.TDSRulesData.PercentageInSalary, htmlAttributes: new { @class = "form-control", @id = "txtTDSEmployerContribution", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.TDSRulesData.EffectiveDate)
+                                                        @Html.TextBoxFor(model => model.TDSRulesData.EffectiveDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtTDSWithEffectDate", @readOnly = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 text-right">
+                                                <br />
+                                                <button class="btn btn1 btn-success" id="btnPFESITDSSubmit" onclick="SubmitPFESITDSData()">Submit</button>
+                                                <button class="btn btn1 btn-success" id="btnPFESITDSReset" onclick="ResetPFESITDSData()">Reset</button>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="text-center">
+                                                    <br />
+                                                    <div id="divSalaryHeadInfoMsg" class="alert alert-danger hidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="Holidays" class="tab-pane fade">
+                                        <div class="row">
+
+                                            <div class="col-md-4">
+                                                @Html.LabelFor(model => model.HolidaysData.HolidayType)
+                                                @Html.DropDownListFor(model => model.HolidaysData.HolidayType, new SelectList(Model.HolidayTypeslist, "HolidayTypeName", "HolidayTypeName"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlHolidayType" })
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(model => model.HolidaysData.HolidayDate)
+                                                    @Html.TextBoxFor(model => model.HolidaysData.HolidayDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtHolidayDate", @readOnly = "true" })
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.LabelFor(model => model.HolidaysData.HolidayName)
+                                                @Html.TextBoxFor(model => model.HolidaysData.HolidayName, htmlAttributes: new { @class = "form-control", @id = "txtHolidayName" })
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(model => model.HolidaysData.CostCenter)<br />
+                                                    @Html.ListBoxFor(model => model.HolidaysData.CostCenter, new SelectList(Model.CCCodesList, "CC_Code", "CC_Name"), new { @class = "listbox form-control", @id = "ddlMultiCCCode" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 text-right">
+                                                <br />
+                                                <button class="btn btn1 btn-success" id="btnHolidaySubmit" onclick="SubmitHolidaySData()">Submit</button>
+                                                <button class="btn btn1 btn-success" id="btnHolidayReset" onclick="ResetHolidayData()">Reset</button>
+                                            </div>
+                                        </div>
+                                            <div class="row">
+                                                <div class="row rowspace">
+                                                    <div class="text-center">
+                                                        <br />
+                                                        <div id="divHolidayInfoMsg" class="alert alert-danger hidden">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="divgridholidays">
+                                                @Html.Action("GetAllHolidays", "HR")
+                                            </div>
+                                            @*Holidays*@
+                                        </div>
+                                        <div id="ELorPaidLeaveRules" class="tab-pane fade">
+                                            @*ELorPaidLeaveRules*@
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    @Html.LabelFor(model => model.ELorPaidLeaveRuleData.LeaveType)
+                                                    @Html.DropDownListFor(model => model.ELorPaidLeaveRuleData.LeaveType, new SelectList(Model.LeaveTypeslist, "LeaveTypeid", "LeaveTypeName"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlLeaveType" })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <br />
+                                                    @*@Html.LabelFor(model => model.ELorPaidLeaveRuleData.CarryforwardToNextYear)*@
+                                                    <ul class="list-inline">
+                                                        <li class="eagle-checkbox">
+                                                            <label class="eagle-check custom-checkbox">
+                                                                <input type="checkbox" class="eagle-check-input" id="chkLeaveCaryFwd">
+                                                                <span class="eagle-check-indicator"></span>
+                                                                <span class="eagle-check-description">Carry Forward To Next Year</span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-right">
+                                                <br />
+                                                <button class="btn btn1 btn-success" id="btnLeavesSubmit" onclick="SubmitLeavesData()">Submit</button>
+                                                <button class="btn btn1 btn-success" id="btnLeavesReset" onclick="ResetLeavesData()">Reset</button>
+                                            </div>
+
+                                            <div class="row rowspace">
+                                                <div class="text-center">
+                                                    <br />
+                                                    <div id="divLeavesInfoMsg" class="alert alert-danger hidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="divgridleaves">
+                                                @Html.Action("GetAllELorPaidLeaves", "HR")
+                                            </div>
+                                        </div>
+
+                                        <div id="Gratuity" class="tab-pane fade">
+                                            @*Gratuity*@
+                                            <div class="row">
+
+                                                <div class="col-md-3">
+                                                    @Html.LabelFor(model => model.GratuityEligibilityData.ElgibilityInYear)
+                                                    @Html.TextBoxFor(model => model.GratuityEligibilityData.ElgibilityInYear, htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "txtGrauityElgibilityInYear", onkeypress = "return ValidateAmount(this,event);" })
+
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.GratuityEligibilityData.EffectiveDate)
+                                                        @Html.TextBoxFor(model => model.TDSRulesData.EffectiveDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtGrauityEffectiveDate", @readOnly = "true" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.GratuityEligibilityData.GratuityFormula)
+                                                        @Html.TextBoxFor(model => model.GratuityEligibilityData.GratuityFormula, htmlAttributes: new { @class = "form-control col-md-4", @id = "txtGrauityformula", onkeypress = "return ValidateAmount(this,event);" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="col-md-12 text-right">
+                                                    <br />
+                                                    <button class="btn btn1 btn-success" id="btnGratuitySubmit" onclick="SubmitGratuityData()">Submit</button>
+                                                    <button class="btn btn1 btn-success" id="btnGratuityReset" onclick="ResetGratuityData()">Reset</button>
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="text-center">
+                                                    <br />
+                                                    <div id="divGratuityInfoMsg" class="alert alert-danger hidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="LTAAndSalaryAdvance" class="tab-pane fade">
+                                            @*LTAAndSalaryAdvance*@
+                                            <div class="container">
+                                                <div class="col-md-10">
+                                                    <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">LTA(Long Term Advance)   Eligibility</h5>
+                                                </div>
+                                                <div class="col-md-10"><hr class="separationHr" /></div>
+
+                                                <div class="col-md-10 rowspace">
+                                                    <div class="col-md-12">
+                                                        <div class="col-md-5 text-left">@Html.LabelFor(model => model.LTAEligibilityRulesData.LTAEligibleExperienceFrom)</div>
+                                                        <div class="col-md-4 text-right col-lg-offset-1">
+                                                            <select class="form-control dropdown-toggle" id="ddlLTEExpFrom">
+                                                                <option selected="selected" value="Select">Select</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                                <option value="4">4</option>
+                                                                <option value="5">5</option>
+                                                                <option value="6">6</option>
+                                                                <option value="7">7</option>
+                                                                <option value="8">8</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <ul class="list-inline">
+                                                            <li class="eagle-checkbox">
+                                                                <label class="eagle-check custom-checkbox">
+                                                                    <input type="checkbox" class="eagle-check-input" id="chkLTENotExceed">
+                                                                    <span class="eagle-check-indicator"></span>
+                                                                    <span class="eagle-check-description">Not Exceed(Month Salary+Bonus+Paid Leaves)</span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <ul class="list-inline">
+                                                            <li class="eagle-checkbox">
+                                                                <label class="eagle-check custom-checkbox">
+                                                                    <input type="checkbox" class="eagle-check-input" id="chkLTENotApplNoticePeriondEmp">
+                                                                    <span class="eagle-check-indicator"></span>
+                                                                    <span class="eagle-check-description">Not Applicable For Employee in notice period</span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <h5 style="text-align:left;font-weight:bold;margin-bottom:-1%">Salary Advance</h5>
+                                                </div>
+                                                <div class="col-md-10"><hr class="separationHr" /></div>
+                                                <div class="col-md-10 rowspace">
+                                                    <div class="col-md-12">
+                                                        <ul class="list-inline">
+                                                            <li class="eagle-checkbox">
+                                                                <label class="eagle-check custom-checkbox">
+                                                                    <input type="checkbox" class="eagle-check-input" id="chkSalAdvNotExceed">
+                                                                    <span class="eagle-check-indicator"></span>
+                                                                    <span class="eagle-check-description">Not Exceed(Month Salary+Bonus+Paid Leaves)</span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <ul class="list-inline">
+                                                            <li class="eagle-checkbox">
+                                                                <label class="eagle-check custom-checkbox">
+                                                                    <input type="checkbox" class="eagle-check-input" id="chkSalAdvNotApplNoticePeriondEmp">
+                                                                    <span class="eagle-check-indicator"></span>
+                                                                    <span class="eagle-check-description">Not Applicable For Employee in notice period</span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-10 rowspace">
+                                                    <div class="col-md-12 text-right">
+                                                        <br />
+                                                        <button class="btn btn1 btn-success" id="btnLTESalAdvanceSubmit" onclick="SubmitLTESalAdvanceData()">Submit</button>
+                                                        <button class="btn btn1 btn-success" id="btnLTESalAdvanceReset" onclick="ResetLTESalAdvanceData()">Reset</button>
+                                                    </div>
+                                                    <div class="row rowspace">
+                                                        <div class="text-center">
+                                                            <br />
+                                                            <div id="divLTESalAdvanceInfoMsg" class="alert alert-danger hidden">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="NoticePeriod" class="tab-pane fade">
+                                            @*NoticePeriodAndMinWages*@
+                                            <div class="row">
+
+                                                <div class="col-md-3 text-right">
+                                                    @Html.LabelFor(model => model.EmployeeNoticePeriodRulesData.ServingNoticePeriod)
+
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.TextBoxFor(model => model.EmployeeNoticePeriodRulesData.ServingNoticePeriod, htmlAttributes: new { @class = "form-control", @id = "txtNoticePeriodDays", onkeypress = "return IsNumeric(event)" })
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="col-md-12 text-right">
+                                                    <br />
+                                                    <button class="btn btn1 btn-success" id="btnNoticePeriodSubmit" onclick="SubmitNoticePeriodData()">Submit</button>
+                                                    <button class="btn btn1 btn-success" id="btnNoticePeriodReset" onclick="ResetNoticePeriodData()">Reset</button>
+                                                    <br />
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+
+                                                <div class="text-center">
+                                                    <br />
+                                                    <div id="divNoticePeriodInfoMsg" class="alert alert-danger hidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="MinimumWages" class="tab-pane fade">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        @Html.LabelFor(model => model.MinimumWagesRulesData.EffectiveDate)
+                                                        @Html.TextBoxFor(model => model.MinimumWagesRulesData.EffectiveDate, "{0:dd-MMM-yyyy}", htmlAttributes: new { @class = "form-control date-picker", @id = "txtMinWageEffectiveDate", @readOnly = "true" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.LabelFor(model => model.MinimumWagesRulesData.State)
+                                                    @Html.DropDownListFor(model => model.MinimumWagesRulesData.State, new SelectList(Model.StatesList, "State_ID", "State_Name"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlMinWageState" })
+
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.LabelFor(model => model.MinimumWagesRulesData.Amount)
+                                                    @Html.TextBoxFor(model => model.MinimumWagesRulesData.Amount, htmlAttributes: new { @class = "form-control", @id = "txtMinWageAmount", onkeypress = "return ValidateAmount(this,event);" })
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.LabelFor(model => model.MinimumWagesRulesData.SkillType)
+                                                    @Html.DropDownListFor(model => model.MinimumWagesRulesData.SkillType, new SelectList(Model.SkillCategorylist, "SkillName", "SkillName"), "-Please Select-", htmlAttributes: new { @class = "form-control dropdown-toggle", @id = "ddlMinWageSkillName" })
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="col-md-12 text-right">
+                                                    <br />
+                                                    <button class="btn btn1 btn-success" id="btnMinWageSubmit" onclick="SubmitMinWageData()">Submit</button>
+                                                    <button class="btn btn1 btn-success" id="btnMinWageReset" onclick="ResetMinWageData()">Reset</button>
+                                                    <br />
+                                                    <input  type="text" id="txtActiontype"/>
+                                                </div>
+                                            </div>
+                                            <div class="row rowspace">
+                                                <div class="text-center">
+                                                    <br />
+                                                    <div id="divMinWageInfoMsg" class="alert alert-danger hidden">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="MinWageGrid">
+                                                @Html.Action("GetAllMinWages", "HR")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:eq(2) a').tab('show');
+        $("#txtActiontype").val("New");
+        //var cc = "CC-13";
+        //$('#ddlMultiCCCode option[value=' + cc+']').attr("selected", true);
+        //Start of PF,ESI,TDS *************************************************************
+        $("#txtPFWithEffectDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+        $("#txtESIWithEffectDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+
+        $("#txtTDSWithEffectDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            maxDate: 'dateToday',
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+
+
+        //End of PF,ESI,TDS
+
+        //Start of Holidays *************************************************************
+        $("#txtHolidayDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+        $('.listbox').multiselect({
+            includeSelectAllOption: true
+        });
+        //End of Holidays
+        //Start of Gratuity *************************************************************
+        $("#txtGrauityEffectiveDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+        //End of Gratuity
+        //Start of Min Wage**********************************************************
+        $("#txtMinWageEffectiveDate").datepicker({
+            dateFormat: 'dd-M-yy',
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonText: "<i class ='glyphicon glyphicon-calendar'></i>",
+            yearRange: "-100:+0",
+        }).datepicker("setDate", new Date());
+        //End of Min Wage
+    });
+    //Start of Salary Heads *************************************************************
+    function SubmitSalaryHeadData() {
+        var errorMsg = "";
+        isValid = true;
+        var headtypeindex = $("#ddlSalaryHeadType option:selected").index();
+        var headname = $("#txtSalaryHeadName").val();
+        if (headname === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Head Name</p>";
+            isValid = false;
+        }
+        if (headtypeindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Head Type</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divSalaryHeadInfoMsg").text("");
+            $("#divSalaryHeadInfoMsg").append(finalerror + errorMsg + "</div>");
+            $("#divSalaryHeadInfoMsg").addClass("alert-danger");
+            $("#divSalaryHeadInfoMsg").removeClass("hidden alert-success");
+        }
+        else {
+            $("#divSalaryHeadInfoMsg").text("");
+            $("#divSalaryHeadInfoMsg").addClass("hidden");
+
+            let SHdata = {
+                HeadType: $("#ddlSalaryHeadType option:selected").val(),
+                HeadName: $("#txtSalaryHeadName").val()
+            };
+            addFailMsg = "Error Occurred While Adding.";
+            //alert('submit');
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/HR/InsertSalaryHead',
+                data: { shData: SHdata },
+                success: function (Data) {
+                    // alert("Hi");
+                    if (Data.saveStatus === "Submited") {
+                        BindExistingSalaryHeads();
+
+                        //$("#divAddItCodeInfoMsg").text(addSuccessMsg);
+                        //$("#divAddItCodeInfoMsg").removeClass("hidden alert-danger");
+                        //$("#divAddItCodeInfoMsg").addClass("alert-success");
+                    }
+                    else if (Data.saveStatus === "Exist") {
+                        $("#divSalaryHeadInfoMsg").text("Head Name Already Exist");
+                        $("#divSalaryHeadInfoMsg").addClass("alert-danger");
+                        $("#divSalaryHeadInfoMsg").removeClass("hidden alert-success");
+                    }
+                    else {
+                        $("#divSalaryHeadInfoMsg").text(addFailMsg);
+                        $("#divSalaryHeadInfoMsg").addClass("alert-danger");
+                        $("#divSalaryHeadInfoMsg").removeClass("hidden alert-success");
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#divSalaryHeadInfoMsg").text(addFailMsg);
+                    $("#divSalaryHeadInfoMsg").addClass("alert-danger");
+                    $("#divSalaryHeadInfoMsg").removeClass("hidden alert-success");
+                }
+            });
+
+        }
+    }
+    function ResetSalaryHeadData() {
+        location.reload();
+    }
+
+    function BindExistingSalaryHeads() {
+        $("#divGridSalaryHead").load('/HR/GetAllSalaryHeads');
+    }
+    //End of Salary Heads
+
+    //Start of PF,ESI,TDS *************************************************************
+    function SubmitPFESITDSData() {
+
+    }
+    function ResetPFESITDSData() {
+        location.reload();
+    }
+
+    //function SubmitSalaryHeadData() { }
+    //function ResetSalaryHeadData() { }
+    ////End of PF,ESI,TDS
+
+    ////Start of Holidays *************************************************************
+    function SubmitHolidaySData() {
+
+        var errorMsg = "";
+        isValid = true;
+        var holidaytypeindex = $("#ddlHolidayType option:selected").index();
+
+        var holidaydate = $("#txtHolidayDate").val();
+
+        var holidayname = $("#txtHolidayName").val();
+        var holidayCC = $('#ddlMultiCCCode > option:selected');
+        if (holidayname === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Holiday Name</p>";
+            isValid = false;
+        }
+        if (holidaydate === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Holiday Date</p>";
+            isValid = false;
+        }
+        if (holidaytypeindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Holiday Type</p>";
+            isValid = false;
+        }
+
+        if (holidayCC.length == 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Cost Center</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divHolidayInfoMsg").text("");
+            $("#divHolidayInfoMsg").append(finalerror + errorMsg + "</div>");
+            $("#divHolidayInfoMsg").addClass("alert-danger");
+            $("#divHolidayInfoMsg").removeClass("hidden alert-success");
+        }
+        else {
+            $("#divHolidayInfoMsg").text("");
+            $("#divHolidayInfoMsg").addClass("hidden");
+            debugger;
+            var SelectedCC = $('#ddlMultiCCCode option:selected').toArray().map(item => item.value).join() + ',';
+            let newholidaydata = {
+                HolidayType: $("#ddlHolidayType option:selected").val(),
+                HolidayDate: $("#txtHolidayDate").val(),
+                HolidayName: $("#txtHolidayName").val(),
+                CostCenter: SelectedCC,
+                Action: "New"            
+            };
+            addFailMsg = "Error Occurred While Adding.";
+            //alert('submit');           
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/HR/InsertHolidays',
+                data: { holidayData: newholidaydata },
+                success: function (Data) {
+                    if (Data.saveStatus === "Submited") {
+                        BindExistingHolidays();
+                    }                    
+                    else {
+                        $("#divHolidayInfoMsg").text(Data.saveStatus);
+                        $("#divHolidayInfoMsg").addClass("alert-danger");
+                        $("#divHolidayInfoMsg").removeClass("hidden alert-success");
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#divHolidayInfoMsg").text(addFailMsg);
+                    $("#divHolidayInfoMsg").addClass("alert-danger");
+                    $("#divHolidayInfoMsg").removeClass("hidden alert-success");
+                }
+            });
+        }
+    }
+    function BindExistingHolidays() {
+        $("#divgridholidays").load('/HR/GetAllHolidays');
+    }
+    function ResetHolidayData() {
+        //location.reload();
+        $('.nav-tabs li:eq(2) a').tab('show');
+        $("#txtMinWageEffectiveDate").datepicker("setDate", 'dateToday');
+        $('#txtHolidayDate').val("");
+        $('#txtHolidayName').val("");
+        $("#ddlHolidayType").prop('selectedIndex', 0);
+        $('#ddlMultiCCCode').multiselect("deselectAll", false).multiselect("refresh");
+
+
+    }
+    function HolidayActionChange(ModelData, Action) {
+       
+        var selectedaction = Action.value;
+        if (selectedaction === "E") {
+            $("#ddlHolidayType").find("option:contains('" + ModelData.HolidayType + "')").each(function () {
+                if ($(this).text() == ModelData.HolidayType) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+            $("#txtMinWageEffectiveDate").datepicker("setDate", ModelData.HolidayDate);        
+            $('#txtHolidayName').val(ModelData.HolidayName);
+           
+            $("#ddlMultiCCCode option").remove();
+            $.ajax({
+                type: "POST",
+                url: "/HR/BindAllCccodes",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $.each(response, function () {
+                        var index = ModelData.SelectedCCCode.indexOf(this['CC_Code'] );
+                        console.log(index);
+                        
+                        if (index > -1) {
+                            $('#ddlMultiCCCode').append('<option value="' + this['CC_Code'] + '" selected>' + this['CC_Name'] + '</option>').multiselect('rebuild');
+                        }
+                        else { $('#ddlMultiCCCode').append('<option value="' + this['CC_Code'] + '" >' + this['CC_Name'] + '</option>').multiselect('rebuild'); }
+                    });
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+            //$('#ddlMultiCCCode').multiselect("deselectAll", false).multiselect("refresh");
+            //var cc = "CC-33";
+            //$('#ddlMultiCCCode option[value=' + cc + ']').attr("selected", true);
+            //ModelData.SelectedCCCode.forEach(function (element, index) {
+            //    console.log(element);
+            //    var selectedcc =element.replace(/\"/g, "")
+            // //  element.replace(/"/g, '');
+            //    debugger;
+                
+            //   // $('#ddlMultiCCCode option[value=' + cc +']').attr("selected", true);
+            //    //$("#ddlMultiCCCode option[value='" + element + "']").attr("selected", "true");
+            //});
+        }
+      
+    }
+    ////End of Holidays
+
+    ///Start of leaves *************************************************************
+    function SubmitLeavesData() {
+        var errorMsg = "";
+        isValid = true;
+        var leavetypeindex = $("#ddlLeaveType option:selected").index();
+        var leavecarryfwd = 'No';
+
+
+        if (leavetypeindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Leave Type</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divLeavesInfoMsg").text("");
+            $("#divLeavesInfoMsg").append(finalerror + errorMsg + "</div>");
+            $("#divLeavesInfoMsg").addClass("alert-danger");
+            $("#divLeavesInfoMsg").removeClass("hidden alert-success");
+        }
+        else {
+            $("#divLeavesInfoMsg").text("");
+            $("#divLeavesInfoMsg").addClass("hidden");
+            if ($('#chkLeaveCaryFwd').is(':checked') == true) { leavecarryfwd = 'Yes'; }
+
+            let Leavedata = {
+                LeaveType: $("#ddlLeaveType option:selected").text(),
+                CarryforwardToNextYear: leavecarryfwd
+            };
+            addFailMsg = "Error Occurred While Adding.";
+            //alert('submit');
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/HR/InsertELorPaidLeaves',
+                data: { leaveData: Leavedata },
+                success: function (Data) {
+                    // alert("Hi");
+                    if (Data.saveStatus === "Submited") {
+                        BindExistingLeaves();
+                        BindLeaveTypes();
+                        $('#chkLeaveCaryFwd').prop('checked', false);
+                        //$("#divAddItCodeInfoMsg").text(addSuccessMsg);
+                        //$("#divAddItCodeInfoMsg").removeClass("hidden alert-danger");
+                        //$("#divAddItCodeInfoMsg").addClass("alert-success");
+                    }
+                    else if (Data.saveStatus === "Exist") {
+                        $("#divLeavesInfoMsg").text("Head Name Already Exist");
+                        $("#divLeavesInfoMsg").addClass("alert-danger");
+                        $("#divLeavesInfoMsg").removeClass("hidden alert-success");
+                    }
+                    else {
+                        $("#divLeavesInfoMsg").text(addFailMsg);
+                        $("#divLeavesInfoMsg").addClass("alert-danger");
+                        $("#divLeavesInfoMsg").removeClass("hidden alert-success");
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#divLeavesInfoMsg").text(addFailMsg);
+                    $("#divLeavesInfoMsg").addClass("alert-danger");
+                    $("#divLeavesInfoMsg").removeClass("hidden alert-success");
+                }
+            });
+        }
+
+    }
+    function ResetLeavesData() {
+        location.reload();
+    }
+    function BindExistingLeaves() {
+        $("#divgridleaves").load('/HR/GetAllELorPaidLeaves');
+    }
+    function BindLeaveTypes() {
+        $.ajax({
+            type: "POST",
+            url: "/HR/GetRemainingLeaves",
+            data: '{ }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (response) {
+                var ddl = $("#ddlLeaveType");
+                ddl.empty().append('<option selected="selected" value="0">-Please Select-</option>');
+                $.each(response, function () {
+                    ddl.append($("<option></option>").val(this['LeaveTypeid']).html(this['LeaveTypeName']));
+                });
+            },
+            failure: function (response) {
+            },
+            error: function (response) {
+            }
+        });
+
+    }
+    //End of leaves
+
+    //Start of Gratuity *************************************************************
+    function SubmitGratuityData() {
+
+    }
+    function ResetGratuityData() {
+        location.reload();
+    }
+    //End  of Gratuity
+    //Start of LTESalAdvance *************************************************************
+    function SubmitLTESalAdvanceData() { }
+    function ResetLTESalAdvanceData() {
+        location.reload();
+    }
+    //End of LTESalAdvance
+    //Start of Notice Period *************************************************************
+    function SubmitNoticePeriodData() {
+        var errorMsg = "";
+        isValid = true;
+        var days = $('#txtNoticePeriodDays').val();
+        if (days === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Notice Period Days</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divNoticePeriodInfoMsg").text("");
+            $("#divNoticePeriodInfoMsg").append(finalerror + errorMsg + "</div>");
+            $("#divNoticePeriodInfoMsg").addClass("alert-danger");
+            $("#divNoticePeriodInfoMsg").removeClass("hidden alert-success");
+        }
+        else {
+            $("#divNoticePeriodInfoMsg").text("");
+            $("#divNoticePeriodInfoMsg").addClass("hidden");
+        }
+    }
+    function ResetNoticePeriodData() { location.reload();}
+    //End of Notice Period
+    //Start of MinWage *************************************************************
+    function SubmitMinWageData() {
+
+        var errorMsg = "";
+        isValid = true;
+        var Effectdate = $('#txtMinWageEffectiveDate').val();
+        var stateindex = $("#ddlMinWageState option:selected").index();
+        var amt = $('#txtMinWageAmount').val();
+        var skillindex = $("#ddlMinWageSkillName option:selected").index();
+        if (Effectdate === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Effective Date</p>";
+            isValid = false;
+        }
+        if (stateindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select State</p>";
+            isValid = false;
+        }
+        if (amt === "") {
+            errorMsg += "<p style='margin-top:-5px!important;'>Enter Amount</p>";
+            isValid = false;
+        }
+        if (skillindex === 0) {
+            errorMsg += "<p style='margin-top:-5px!important;'>Select Skill Type</p>";
+            isValid = false;
+        }
+        if (!isValid) {
+            var finalerror = "<div style='align:center'><p>Please enter all required fields!</p>";
+            $("#divMinWageInfoMsg").text("");
+            $("#divMinWageInfoMsg").append(finalerror + errorMsg + "</div>");
+            $("#divMinWageInfoMsg").addClass("alert-danger");
+            $("#divMinWageInfoMsg").removeClass("hidden alert-success");
+        }
+        else {
+            $("#divMinWageInfoMsg").text("");
+            $("#divMinWageInfoMsg").addClass("hidden");
+
+            let wagedata = {
+                EffectiveDate: $('#txtMinWageEffectiveDate').val(),
+                State: $("#ddlMinWageState option:selected").text(),
+                Amount: $('#txtMinWageAmount').val(),
+                SkillType: $("#ddlMinWageSkillName option:selected").text()
+            };
+            addFailMsg = "Error Occurred While Adding.";
+            //alert('submit');
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '/HR/InsertMinWages',
+                data: { wageData: wagedata },
+                success: function (Data) {
+                    // alert("Hi");
+                    if (Data.saveStatus === "Submited") {
+                        BindExistingStates();
+                        RebindStates();                      
+                       
+
+                        $("#txtMinWageEffectiveDate").datepicker("setDate", 'dateToday');
+                        $('#txtMinWageAmount').val("");
+                        $("#ddlMinWageSkillName").prop('selectedIndex', 0);
+                        //$("#divAddItCodeInfoMsg").text(addSuccessMsg);
+                        //$("#divAddItCodeInfoMsg").removeClass("hidden alert-danger");
+                        //$("#divAddItCodeInfoMsg").addClass("alert-success");
+                    }
+                    else if (Data.saveStatus === "Exist") {
+                        $("#divMinWageInfoMsg").text("Head Name Already Exist");
+                        $("#divMinWageInfoMsg").addClass("alert-danger");
+                        $("#divMinWageInfoMsg").removeClass("hidden alert-success");
+                    }
+                    else {
+                        $("#divMinWageInfoMsg").text(addFailMsg);
+                        $("#divMinWageInfoMsg").addClass("alert-danger");
+                        $("#divMinWageInfoMsg").removeClass("hidden alert-success");
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#divMinWageInfoMsg").text(addFailMsg);
+                    $("#divMinWageInfoMsg").addClass("alert-danger");
+                    $("#divMinWageInfoMsg").removeClass("hidden alert-success");
+                }
+            });
+        }
+    }
+    function BindExistingStates() {
+        $("#MinWageGrid").load('/HR/GetAllMinWages');
+    }
+    function RebindStates() {
+        $.ajax({
+            type: "POST",
+            url: "/HR/GetRemainingMinWageStates",
+            data: '{ }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+            success: function (response) {
+                var ddl = $("#ddlMinWageState");
+                ddl.empty().append('<option selected="selected" value="0">-Please Select-</option>');
+                $.each(response, function () {
+                    ddl.append($("<option></option>").val(this['State_ID']).html(this['State_Name']));
+                });
+            },
+            failure: function (response) {
+            },
+            error: function (response) {
+            }
+        });
+    }
+    function ResetNoticePeriodData() { location.reload(); }
+    //End of MinWage
+    //others
+    function ValidateAmount(txt, event) {
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode == 46) {
+            if (txt.value.indexOf(".") < 0)
+                return true;
+            else
+                return false;
+        }
+
+        if (txt.value.indexOf(".") > 0) {
+            var txtlen = txt.value.length;
+            var dotpos = txt.value.indexOf(".");
+            if ((txtlen - dotpos) > 2)
+                return false;
+        }
+
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    function IsNumeric(evt) {
+        var iKeyCode = (evt.which) ? evt.which : evt.keyCode;
+        if ((iKeyCode < 48 || iKeyCode > 57))
+            return false;
+    }
+    
+   
+</script>
+
